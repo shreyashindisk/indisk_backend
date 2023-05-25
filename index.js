@@ -41,6 +41,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+process.on("uncaughtException", function (err) {
+  console.error(err);
+  console.log("Node NOT Exiting...");
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Example app listening on port ...`);
 });
