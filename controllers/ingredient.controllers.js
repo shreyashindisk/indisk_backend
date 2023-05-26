@@ -51,7 +51,7 @@ const getAllIngredientItems = async (req, res) => {
 const getIngredientItemByName = async (req, res) => {
   try {
     const ingredientItem = await IngredientItem.findOne({
-      name: req.params.name,
+      name: req.params.name.toLowerCase(),
     });
     res.status(200).json({ ingredientItem });
   } catch (error) {
@@ -64,13 +64,13 @@ const getAllIngredientAndAddFieldAndUpdate = async (req, res) => {
     const ingredientItems = await IngredientItem.find({});
     ingredientItems.forEach(async (item) => {
       const ingredientItem = await IngredientItem.findOneAndUpdate(
-        { name: item.name },
+        { name: item.name.toLowerCase() },
         { $set: { kitchen_name: "sales" } },
         { new: true }
       );
       ingredientItem.save();
       const newIngredientItem = {
-        name: ingredientItem.name,
+        name: ingredientItem.name.toLowerCase(),
         kitchen_name: "central",
         unit: ingredientItem.unit,
         available_qty: ingredientItem.available_qty,
@@ -96,7 +96,7 @@ const createIngredientItem = async (req, res) => {
 
 const createIngredientItemFromApp = async (req, res) => {
   try {
-    const {
+    var {
       name,
       unit,
       content_per_single_item,
@@ -109,6 +109,12 @@ const createIngredientItemFromApp = async (req, res) => {
       min_stock_required_sales,
       avl_qty_sales,
     } = req.body;
+
+    //convert evything to lowercase
+    name = name.toLowerCase();
+    unit = unit.toLowerCase();
+    supplier_name = supplier_name.toLowerCase();
+    barcode_number = barcode_number.toLowerCase();
 
     const ingredientItem = await IngredientItem.create({
       name: name,
@@ -221,7 +227,7 @@ const updateMinStockRequiredFieldForAllIngredients = async (req, res) => {
     const ingredientItems = await IngredientItem.find({});
     ingredientItems.forEach(async (item) => {
       const ingredientItem = await IngredientItem.findOneAndUpdate(
-        { name: item.name },
+        { name: item.name.toLowerCase() },
         { $set: { min_stock_required: 0 } },
         { new: true }
       );
@@ -241,12 +247,12 @@ const shoppingList = async (req, res) => {
     const salesShoppingList = [];
     const ingredientNames = [];
     ingredientItems.forEach((item) => {
-      if (!ingredientNames.includes(item.name)) {
-        ingredientNames.push(item.name);
+      if (!ingredientNames.includes(item.name.toLowerCase())) {
+        ingredientNames.push(item.name.toLowerCase());
       }
       if (item.available_qty < item.min_stock_required) {
         shoppingList.push(item);
-        if (item.kitchen_name == "central") {
+        if (item.kitchen_name.toLowerCase() == "central") {
           centralShoppingList.push(item);
         } else {
           salesShoppingList.push(item);
@@ -262,16 +268,16 @@ const shoppingList = async (req, res) => {
       var salesAvailableQty = 0;
       var shopItem;
       shoppingList.forEach((item) => {
-        if (item.name == name) {
+        if (item.name.toLowerCase() == name.toLowerCase()) {
           shopItem = {
-            name: item.name,
-            kitchen_name: item.kitchen_name,
+            name: item.name.toLowerCase(),
+            kitchen_name: item.kitchen_name.toLowerCase(),
             unit: item.unit,
             content_per_single_item: item.content_per_single_item,
             available_qty: item.available_qty,
             barcode_number: item.barcode_number,
             image_url: item.image_url,
-            supplier_name: item.supplier_name,
+            supplier_name: item.supplier_name.toLowerCase(),
           };
           if (item.kitchen_name == "central") {
             centralMinStockRequired = item.min_stock_required;
@@ -345,8 +351,8 @@ const updateSupplierName = async (req, res) => {
   try {
     const { name, supplier_name } = req.body;
     const data = await IngredientItem.updateMany(
-      { name: name },
-      { supplier_name: supplier_name },
+      { name: name.toLowerCase() },
+      { supplier_name: supplier_name.toLowerCase() },
       { new: true }
     );
     if (data.nModified == 0) {
@@ -372,6 +378,7 @@ const ingredientDetailUpdate = async (req, res) => {
 
     item_name = item_name.toLowerCase();
     kitchen_type = kitchen_type.split(" ")[0].toLowerCase();
+    supplier_name = supplier_name.toLowerCase();
 
     const data = await IngredientItem.findOneAndUpdate(
       { name: item_name, kitchen_name: kitchen_type },

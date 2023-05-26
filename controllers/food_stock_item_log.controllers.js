@@ -2,7 +2,11 @@ const FoodStockItemLog = require("../models/food_stock_items_log.models.js");
 
 const create = async (body) => {
   try {
-    const { kitchen_name, data } = body;
+    var { kitchen_name, data } = body;
+
+    //convert to lowercase
+    kitchen_name = kitchen_name.toLowerCase();
+
     const foodStockItemLog = new FoodStockItemLog({
       kitchen_name,
       data,

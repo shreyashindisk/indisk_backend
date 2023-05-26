@@ -241,7 +241,7 @@ const updateFoodStockItem = async (req, res) => {
 
 const addSomeFieldAndUpdateFoodStockItem = async (req, res) => {
   try {
-    const {
+    var {
       name,
       kitchen_name,
       min_stock_required,
@@ -251,6 +251,10 @@ const addSomeFieldAndUpdateFoodStockItem = async (req, res) => {
       priority,
       time_unit,
     } = req.body;
+
+    name = name.toLowerCase();
+    kitchen_name = kitchen_name.toLowerCase();
+
     const foodStockItem = await FoodStockItem.findOneAndUpdate(
       { name: name, kitchen_name: kitchen_name },
       {
@@ -354,14 +358,17 @@ const updateUsedAndMaintainLog = async (req, res) => {
 
     for (var i = 0; i < foodStockItems.length; i++) {
       for (var j = 0; j < food_stock_items.length; j++) {
-        if (foodStockItems[i].name == food_stock_items[j].name) {
+        if (
+          foodStockItems[i].name.toLowerCase() ==
+          food_stock_items[j].name.toLowerCase()
+        ) {
           var avl =
             foodStockItems[i].available_qty - food_stock_items[j].quantity;
           if (avl < 0) {
             avl = 0;
           }
           data.push({
-            name: foodStockItems[i].name,
+            name: foodStockItems[i].name.toLowerCase(),
             available_qty: avl,
           });
         }
@@ -370,7 +377,7 @@ const updateUsedAndMaintainLog = async (req, res) => {
 
     for (var i = 0; i < data.length; i++) {
       await FoodStockItem.findOneAndUpdate(
-        { name: data[i].name, kitchen_name: kitchen_type },
+        { name: data[i].name.toLowerCase(), kitchen_name: kitchen_type },
         { $set: { available_qty: data[i].available_qty } },
         { new: true }
       );
@@ -429,7 +436,8 @@ const createFoodStockAndCreateLog = async (req, res) => {
     for (var i = 0; i < centralItems.length; i++) {
       for (var j = 0; j < centralFoodStockItems.length; j++) {
         if (
-          centralItems[i].name.toLowerCase() == centralFoodStockItems[j].name
+          centralItems[i].name.toLowerCase() ==
+          centralFoodStockItems[j].name.toLowerCase()
         ) {
           var avl =
             parseInt(centralFoodStockItems[j].available_qty) +
@@ -450,7 +458,10 @@ const createFoodStockAndCreateLog = async (req, res) => {
 
     for (var i = 0; i < salesItems.length; i++) {
       for (var j = 0; j < salesFoodStockItems.length; j++) {
-        if (salesItems[i].name.toLowerCase() == salesFoodStockItems[j].name) {
+        if (
+          salesItems[i].name.toLowerCase() ==
+          salesFoodStockItems[j].name.toLowerCase()
+        ) {
           var avl =
             parseInt(salesFoodStockItems[j].available_qty) +
             parseInt(salesItems[i].quantity);
