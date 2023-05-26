@@ -25,7 +25,20 @@ const getAllIngredientItems = async (req, res) => {
       findObj = { kitchen_name: kitchen_name };
     }
 
-    const ingredientItems = await IngredientItem.find(findObj);
+    var ingredientItems = await IngredientItem.find(findObj);
+
+    const itemsWithBarcode = [];
+    const itemsWithoutBarcode = [];
+
+    ingredientItems.forEach((item) => {
+      if (item.barcode_number == undefined || item.barcode_number == "") {
+        itemsWithoutBarcode.push(item);
+      } else {
+        itemsWithBarcode.push(item);
+      }
+    });
+
+    ingredientItems = itemsWithoutBarcode.concat(itemsWithBarcode);
 
     res.status(200).json({ ingredientItems });
   } catch (error) {
@@ -455,6 +468,51 @@ const findMissingItemFromSales = async (req, res) => {
   }
 };
 
+const findAllItemsWithouSupplierName = async (req, res) => {
+  try {
+    const ingredientItems = await IngredientItem.find(
+      { kitchen_name: "central" },
+      { name: 1, supplier_name: 1 }
+    );
+    const itemsWithoutSupplierName = [];
+    ingredientItems.forEach((item) => {
+      if (
+        item.supplier_name == undefined ||
+        item.supplier_name == "" ||
+        item.supplier_name == " " ||
+        item.supplier_name == "." ||
+        item.supplier_name == null ||
+        item.supplier_name == "null" ||
+        item.supplier_name == "NULL" ||
+        item.supplier_name == "Null" ||
+        item.supplier_name == "none" ||
+        item.supplier_name == "None" ||
+        item.supplier_name == "NONE" ||
+        item.supplier_name == "None" ||
+        item.supplier_name == "N/A" ||
+        item.supplier_name == "n/a" ||
+        item.supplier_name == "N/a" ||
+        item.supplier_name == "n/A" ||
+        item.supplier_name == "na" ||
+        item.supplier_name == "Na" ||
+        item.supplier_name == "NA" ||
+        item.supplier_name == "nA" ||
+        item.supplier_name == "not available" ||
+        item.supplier_name == "Not given" ||
+        item.supplier_name == "Not Given" ||
+        item.supplier_name == "not given"
+      ) {
+        itemsWithoutSupplierName.push(item.name);
+      }
+    });
+    res.status(200).json({ itemsWithoutSupplierName });
+  } catch (error) {
+    console.log("error");
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllIngredientItems,
   getIngredientItemByName,
@@ -471,4 +529,5 @@ module.exports = {
   ingredientDetailUpdate,
   createIngredientItemFromApp,
   findMissingItemFromSales,
+  findAllItemsWithouSupplierName,
 };

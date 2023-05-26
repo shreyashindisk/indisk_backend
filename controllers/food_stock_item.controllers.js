@@ -390,7 +390,6 @@ const createFoodStockAndCreateLog = async (req, res) => {
     //make lower case names imp,
     const centralItems = [];
     const salesItems = [];
-
     foodStockCreatedLog({ data: food_stock_items });
 
     for (var i = 0; i < food_stock_items.length; i++) {

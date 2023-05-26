@@ -15,9 +15,11 @@ const {
   ingredientDetailUpdate,
   createIngredientItemFromApp,
   findMissingItemFromSales,
+  findAllItemsWithouSupplierName,
 } = require("../controllers/ingredient.controllers");
 
 router.get("/", getAllIngredientItems);
+router.get("/findAllItemsWithouSupplierName", findAllItemsWithouSupplierName);
 router.get("/test", findMissingItemFromSales);
 router.get("/shoppingList", shoppingList);
 router.get("/:name", getIngredientItemByName);
