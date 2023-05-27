@@ -485,6 +485,52 @@ const createFoodStockAndCreateLog = async (req, res) => {
   }
 };
 
+const updateImageAndSizeAndAvlQty = async (req, res) => {
+  try {
+    var { name, kitchen_name, image_url, content_per_single_item, quantity } =
+      req.body;
+
+    name = name.toLowerCase();
+    kitchen_name = kitchen_name.toLowerCase();
+
+    if (kitchen_name.includes("central")) {
+      kitchen_name = "central";
+    } else if (kitchen_name.includes("sales")) {
+      kitchen_name = "sales";
+    }
+
+    //image url upda for both central and sales,content per single item update for both central and sales
+    //quantity update for only given kitchen,
+
+    const foodStockItem = await FoodStockItem.findOneAndUpdate(
+      { name: name, kitchen_name: kitchen_name },
+      {
+        $set: {
+          available_qty: quantity,
+        },
+      },
+      { new: true }
+    );
+
+    await FoodStockItem.updateMany(
+      { name: name },
+      {
+        $set: {
+          image_url: image_url,
+          content_per_single_item: content_per_single_item,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "success" });
+  } catch (error) {
+    console.log("error");
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllNameAndImageUrl,
   getAllFoodStockItems,
@@ -497,4 +543,5 @@ module.exports = {
   createFoodStockItemFromApp,
   updateUsedAndMaintainLog,
   createFoodStockAndCreateLog,
+  updateImageAndSizeAndAvlQty,
 };

@@ -374,11 +374,15 @@ const ingredientDetailUpdate = async (req, res) => {
       barcode_number,
       min_stock_required,
       supplier_name,
+      image_url,
     } = req.body;
 
     item_name = item_name.toLowerCase();
     kitchen_type = kitchen_type.split(" ")[0].toLowerCase();
     supplier_name = supplier_name.toLowerCase();
+
+    console.log("image_url");
+    console.log(image_url);
 
     const data = await IngredientItem.findOneAndUpdate(
       { name: item_name, kitchen_name: kitchen_type },
@@ -398,6 +402,7 @@ const ingredientDetailUpdate = async (req, res) => {
           content_per_single_item: content_per_single_item,
           barcode_number: barcode_number,
           supplier_name: supplier_name,
+          image_url: image_url,
         },
       },
       { new: true }

@@ -12,6 +12,7 @@ const {
   getAllNameAndImageUrl,
   updateUsedAndMaintainLog,
   createFoodStockAndCreateLog,
+  updateImageAndSizeAndAvlQty,
 } = require("../controllers/food_stock_item.controllers");
 
 router.get("/", getAllFoodStockItems);
@@ -24,6 +25,7 @@ router.post("/update_created_log", createFoodStockAndCreateLog);
 router.post("/create", createFoodStockItemFromApp);
 
 router.put("/addImageUrlToFoodStockItem", addImageUrlToFoodStockItem);
+router.put("/updateImageAndSizeAndAvlQty", updateImageAndSizeAndAvlQty);
 router.put("/:name", updateFoodStockItem);
 router.put("/", addSomeFieldAndUpdateFoodStockItem);
 router.delete("/:name", deleteFoodStockItemByName);
