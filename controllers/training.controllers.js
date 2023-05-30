@@ -66,8 +66,11 @@ const getAllTrainings = async (req, res) => {
       //kitchen is sales or both
       trainings = await Training.find({ kitchen: { $in: ["sales", "both"] } });
     }
-
-    res.status(200).json({ trainings });
+    if (kitchen === "both") {
+      trainings = await Training.find();
+    }
+    //
+    return res.status(200).json({ trainings });
   } catch (error) {
     console.log("error");
     console.log(error);
