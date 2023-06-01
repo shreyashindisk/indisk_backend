@@ -12,6 +12,7 @@ const runRouter = require("./routes/run.routes");
 const reservedDayPlansRouter = require("./routes/reserved_day_plans.routes");
 const trainingRouter = require("./routes/training.routes");
 const punchInRouter = require("./routes/punch_in.routes");
+const staffShiftRouter = require("./routes/staff_shift.routes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/run", runRouter);
 app.use("/reserved_day_plans", reservedDayPlansRouter);
 app.use("/training", trainingRouter);
 app.use("/punch_in", punchInRouter);
+app.use("/staff_shift", staffShiftRouter);
 
 mongoose.connect(
   "mongodb+srv://shreyashbdhamane0:F5lfRHs30KCTgNzO@cluster0.w8c16id.mongodb.net/?retryWrites=true&w=majority",
