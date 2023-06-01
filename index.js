@@ -11,6 +11,7 @@ const foodStockItemRouter = require("./routes/food_stock_item.routes");
 const runRouter = require("./routes/run.routes");
 const reservedDayPlansRouter = require("./routes/reserved_day_plans.routes");
 const trainingRouter = require("./routes/training.routes");
+const punchInRouter = require("./routes/punch_in.routes");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/food_stock_item", foodStockItemRouter);
 app.use("/run", runRouter);
 app.use("/reserved_day_plans", reservedDayPlansRouter);
 app.use("/training", trainingRouter);
+app.use("/punch_in", punchInRouter);
 
 mongoose.connect(
   "mongodb+srv://shreyashbdhamane0:F5lfRHs30KCTgNzO@cluster0.w8c16id.mongodb.net/?retryWrites=true&w=majority",
