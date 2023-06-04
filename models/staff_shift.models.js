@@ -21,6 +21,14 @@ const StaffShift = mongoose.Schema({
     type: Array,
     required: true,
   },
+  shiftChangedDetails: {
+    type: Array,
+    required: false,
+  },
+  kitchen: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("StaffShift", StaffShift);

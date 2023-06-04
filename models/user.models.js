@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: Number, required: true },
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
+  fcm_token: { type: String, required: false },
 });
 
 const User = mongoose.model("user", userSchema);

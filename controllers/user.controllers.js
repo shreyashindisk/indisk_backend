@@ -1,4 +1,5 @@
 const User = require("../models/user.models");
+const { sendNotification } = require("./push-notification.controllers");
 
 const register = async (req, res) => {
   try {
@@ -74,4 +75,77 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const updateFcm = async (req, res) => {
+  try {
+    var { fcm_token, username } = req.body;
+    username = username.trim();
+    fcm_token = fcm_token.trim();
+
+    //find user and update,
+
+    await User.findOneAndUpdate(
+      { username: username },
+      { fcm_token: fcm_token },
+      { new: true }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getAllUsernames = async (req, res) => {
+  try {
+    const users = await User.find(
+      {
+        type: "staff",
+      },
+      { workingAt: 1, username: 1, _id: 0 }
+    );
+
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    var { username, workingAt } = req.body;
+    username = username.trim();
+    workingAt = workingAt.trim();
+
+    const user = await User.findOneAndUpdate(
+      {
+        username: username,
+        workingAt: workingAt,
+      },
+      {
+        type: "deleted",
+        fcm_token: "",
+      }
+    );
+
+    const payload = {
+      notification: {
+        title: "Indisk: Important Notification",
+        body: "You have important notification from the manager.",
+      },
+      data: {
+        type: "account_deleted",
+      },
+    };
+
+    if (user) {
+      sendNotification(user.fcm_token, payload);
+      return res.status(204).json({ message: "User deleted successfully." });
+    } else {
+      res.status(400).json({ message: "User not found." });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { register, login, updateFcm, getAllUsernames, deleteUser };
