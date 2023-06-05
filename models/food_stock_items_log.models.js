@@ -10,8 +10,20 @@ const foodStockItemsLogSchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
-  },
-  { timestamps: true }
+    month: {
+      type: String,
+      required: true,
+    },
+    year: {
+      type: String,
+      required: true,
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+  }
+  // { timestamps: true }
 );
 
 const FoodStockItemsLog = mongoose.model(

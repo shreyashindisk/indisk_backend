@@ -1,6 +1,7 @@
 const StaffShift = require("../models/staff_shift.models");
 const OpenShift = require("../models/open_shifts.models");
 const User = require("../models/user.models");
+const PunchInLog = require("../models/punch_in_log.models");
 
 const {
   weekDays,
@@ -9,6 +10,7 @@ const {
   getDaysInMonthWithWeekdayUTC,
 } = require("../constants/days");
 const { sendNotification } = require("./push-notification.controllers");
+const WorkingHours = require("../models/working_hours.models");
 
 const bookEntrieMonthFromWeekDay = async (req, res) => {
   try {
@@ -821,6 +823,85 @@ const take_extra_shift = async (req, res) => {
   }
 };
 
+const getAllWorkingHours = async (req, res) => {
+  try {
+    var { date } = req.query;
+    date = date.toLocaleString().split(" ")[0];
+    var year = date.split("-")[0];
+    var month = parseInt(date.split("-")[1]);
+    const monthList = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    month = monthList[month - 1];
+
+    const data = await WorkingHours.find({
+      month: month,
+      year: year,
+    });
+
+    //create map for user vs working hours and kitchen,
+    const userVsWorkingHours = {};
+    for (var i = 0; i < data.length; i++) {
+      const singleData = data[i];
+      const username = singleData.username;
+      const workingHoursInMins = singleData.workingHoursInMins;
+      const kitchen = singleData.workingAt;
+      var centralMins = 0,
+        salesMins = 0;
+      if (kitchen === "central") {
+        centralMins = workingHoursInMins;
+      } else {
+        salesMins = workingHoursInMins;
+      }
+
+      if (userVsWorkingHours[username] === undefined) {
+        userVsWorkingHours[username] = {};
+        userVsWorkingHours[username]["central"] = 0;
+        userVsWorkingHours[username]["sales"] = 0;
+      }
+      if (kitchen == "central") {
+        userVsWorkingHours[username]["central"] += centralMins;
+      } else {
+        userVsWorkingHours[username]["sales"] += salesMins;
+      }
+    }
+
+    //convert the map into array og objects where object containers username, central, sales
+    const userVsWorkingHoursArray = [];
+    for (var key in userVsWorkingHours) {
+      const singleUser = {};
+      singleUser["username"] = key;
+      singleUser["central"] = userVsWorkingHours[key]["central"];
+      singleUser["sales"] = userVsWorkingHours[key]["sales"];
+      userVsWorkingHoursArray.push(singleUser);
+    }
+
+    console.log(userVsWorkingHoursArray);
+
+    return res.status(200).send({
+      userVsWorkingHoursArray,
+    });
+    // console.log("userVsWorkingHours");
+    // console.log(userVsWorkingHours);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      message: e.message || "Some error occurred while getting working hours.",
+    });
+  }
+};
+
 module.exports = {
   bookEntrieMonthFromWeekDay,
   getDailyShiftByDate,
@@ -828,4 +909,5 @@ module.exports = {
   getMySchedule,
   freeMyShift,
   take_extra_shift,
+  getAllWorkingHours,
 };

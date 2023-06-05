@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   fcm_token: { type: String, required: false },
+  hourly_rate: { type: Number, required: false },
 });
 
 const User = mongoose.model("user", userSchema);

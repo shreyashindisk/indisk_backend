@@ -8,6 +8,21 @@ const weekDays = [
   "Saturday",
 ];
 
+const monthList = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const map = new Map();
 map.set("Sunday", 0);
 map.set("Monday", 1);
@@ -44,4 +59,5 @@ module.exports = {
   map,
   getDaysInMonthUTC,
   getDaysInMonthWithWeekdayUTC,
+  monthList,
 };
