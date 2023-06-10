@@ -137,7 +137,13 @@ const deleteUser = async (req, res) => {
     };
 
     if (user) {
-      sendNotification(user.fcm_token, payload);
+      try {
+        if (user.fcm_token) {
+          sendNotification(user.fcm_token, payload);
+        }
+      } catch (err) {
+        console.log(err);
+      }
       return res.status(204).json({ message: "User deleted successfully." });
     } else {
       res.status(400).json({ message: "User not found." });
