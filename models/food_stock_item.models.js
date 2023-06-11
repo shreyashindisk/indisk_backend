@@ -49,6 +49,10 @@ const foodStockItemSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  shifting_constant: {
+    type: Number,
+    required: false,
+  },
 });
 
 const FoodStockItem = mongoose.model("food_stock_item", foodStockItemSchema);

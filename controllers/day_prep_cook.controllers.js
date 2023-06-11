@@ -19,8 +19,16 @@ const findBelowRequirementFoodItems = async () => {
     const FoodStockItems = await getAllFoodStockItems();
     const belowRequirementFoodItems = [];
     FoodStockItems.forEach((item) => {
-      if (item.available_qty < item.min_stock_required) {
-        belowRequirementFoodItems.push(item);
+      if (item.name.includes("with")) {
+        if (item.name.includes("without")) {
+          if (item.available_qty < item.min_stock_required) {
+            belowRequirementFoodItems.push(item);
+          }
+        }
+      } else {
+        if (item.available_qty < item.min_stock_required) {
+          belowRequirementFoodItems.push(item);
+        }
       }
     });
 
@@ -62,8 +70,17 @@ const findBelowRequirementFoodItemsExt = async (req, res) => {
     const FoodStockItems = await getAllFoodStockItems();
     const belowRequirementFoodItems = [];
     FoodStockItems.forEach((item) => {
-      if (item.available_qty < item.min_stock_required) {
-        belowRequirementFoodItems.push(item);
+      if (item.name.includes("with")) {
+        if (item.name.includes("without")) {
+          if (item.available_qty < item.min_stock_required) {
+            belowRequirementFoodItems.push(item);
+            console.log(item);
+          }
+        }
+      } else {
+        if (item.available_qty < item.min_stock_required) {
+          belowRequirementFoodItems.push(item);
+        }
       }
     });
 
@@ -94,9 +111,10 @@ const findBelowRequirementFoodItemsExt = async (req, res) => {
       }
     });
     const final = await finalData(belowRequirementFoodItemsExt);
-
+    console.log(final);
     return res.status(200).json(final);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error.message });
   }
 };

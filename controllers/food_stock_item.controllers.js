@@ -77,6 +77,7 @@ const createFoodStockItemFromApp = async (req, res) => {
       min_stock_required_sales_without,
       avl_qty_sales_without,
       non_veg_type,
+      shifting_constant,
     } = req.body;
 
     name = name.toLowerCase();
@@ -104,6 +105,7 @@ const createFoodStockItemFromApp = async (req, res) => {
       min_stock_required_sales_without
     );
     avl_qty_sales_without = parseInt(avl_qty_sales_without);
+    shifting_constant = parseInt(shifting_constant);
     non_veg_type = non_veg_type.toLowerCase();
     if (
       preparations != undefined &&
@@ -131,6 +133,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
         {
           name: name,
@@ -145,6 +148,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
       ]);
     } else {
@@ -162,6 +166,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
         {
           name: name + " without " + non_veg_type,
@@ -176,6 +181,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
         {
           name: name + " with " + non_veg_type,
@@ -190,6 +196,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
         {
           name: name + " without " + non_veg_type,
@@ -204,6 +211,7 @@ const createFoodStockItemFromApp = async (req, res) => {
           cooking_time: cooking_time,
           priority: priority,
           image_url: image_url,
+          shifting_constant: shifting_constant,
         },
       ]);
     }
@@ -487,8 +495,15 @@ const createFoodStockAndCreateLog = async (req, res) => {
 
 const updateImageAndSizeAndAvlQty = async (req, res) => {
   try {
-    var { name, kitchen_name, image_url, content_per_single_item, quantity } =
-      req.body;
+    var {
+      name,
+      kitchen_name,
+      image_url,
+      content_per_single_item,
+      quantity,
+      min_stock_required,
+      shifting_constant,
+    } = req.body;
 
     name = name.toLowerCase();
     kitchen_name = kitchen_name.toLowerCase();
@@ -502,11 +517,13 @@ const updateImageAndSizeAndAvlQty = async (req, res) => {
     //image url upda for both central and sales,content per single item update for both central and sales
     //quantity update for only given kitchen,
 
-    const foodStockItem = await FoodStockItem.findOneAndUpdate(
+    await FoodStockItem.findOneAndUpdate(
       { name: name, kitchen_name: kitchen_name },
       {
         $set: {
           available_qty: quantity,
+          min_stock_required: min_stock_required,
+          shifting_constant: shifting_constant,
         },
       },
       { new: true }
@@ -518,6 +535,7 @@ const updateImageAndSizeAndAvlQty = async (req, res) => {
         $set: {
           image_url: image_url,
           content_per_single_item: content_per_single_item,
+          shifting_constant: shifting_constant,
         },
       },
       { new: true }
