@@ -17,6 +17,7 @@ const staffShiftRouter = require("./routes/staff_shift.routes");
 const notificationRouter = require("./routes/notifications.routes");
 const urgentRouter = require("./routes/urgent.routes");
 const cronRouter = require("./routes/cron.routes.js");
+const supplierRouter = require("./routes/suppliers.routes");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/punch_in", punchInRouter);
 app.use("/staff_shift", staffShiftRouter);
 app.use("/notifications", notificationRouter);
 app.use("/urgent", urgentRouter);
+app.use("/supplier", supplierRouter);
 
 mongoose.connect(
   "mongodb+srv://shreyashbdhamane0:F5lfRHs30KCTgNzO@cluster0.w8c16id.mongodb.net/?retryWrites=true&w=majority",
