@@ -16,6 +16,7 @@ const punchInRouter = require("./routes/punch_in.routes");
 const staffShiftRouter = require("./routes/staff_shift.routes");
 const notificationRouter = require("./routes/notifications.routes");
 const urgentRouter = require("./routes/urgent.routes");
+const cronRouter = require("./routes/cron.routes.js");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/", cronRouter);
 app.use("/user", userRouter);
 app.use("/ingredient", ingredientRouter);
 app.use("/recipe_ingredients", recipeIngredientsRouter);
@@ -59,5 +61,5 @@ process.on("uncaughtException", function (err) {
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`Example app listening on port ...`);
+  console.log(`Example app listening on port ...` + port);
 });
