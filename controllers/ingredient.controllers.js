@@ -99,6 +99,7 @@ const createIngredientItemFromApp = async (req, res) => {
     var {
       name,
       unit,
+      kitchen_name,
       content_per_single_item,
       price_per_single_item,
       supplier_name,
@@ -115,34 +116,36 @@ const createIngredientItemFromApp = async (req, res) => {
     unit = unit.toLowerCase();
     supplier_name = supplier_name.toLowerCase();
     barcode_number = barcode_number.toLowerCase();
-
-    const ingredientItem = await IngredientItem.create({
-      name: name,
-      kitchen_name: "central",
-      unit: unit,
-      available_qty: avl_qty_central,
-      min_stock_required: min_stock_required_central,
-      content_per_single_item: content_per_single_item,
-      price_per_single_item: price_per_single_item,
-      supplier_name: supplier_name,
-      barcode_number: barcode_number,
-      image_url: image_url,
-    });
-    ingredientItem.save();
-    const ingredientItem2 = await IngredientItem.create({
-      name: name,
-      kitchen_name: "sales",
-      unit: unit,
-      available_qty: avl_qty_sales,
-      min_stock_required: min_stock_required_sales,
-      content_per_single_item: content_per_single_item,
-      price_per_single_item: price_per_single_item,
-      supplier_name: supplier_name,
-      barcode_number: barcode_number,
-      image_url: image_url,
-    });
-    ingredientItem2.save();
-
+    if (kitchen_name == "central" || kitchen_name == "both") {
+      const ingredientItem = await IngredientItem.create({
+        name: name,
+        kitchen_name: "central",
+        unit: unit,
+        available_qty: avl_qty_central,
+        min_stock_required: min_stock_required_central,
+        content_per_single_item: content_per_single_item,
+        price_per_single_item: price_per_single_item,
+        supplier_name: supplier_name,
+        barcode_number: barcode_number,
+        image_url: image_url,
+      });
+      ingredientItem.save();
+    }
+    if (kitchen_name == "sales" || kitchen_name == "both") {
+      const ingredientItem2 = await IngredientItem.create({
+        name: name,
+        kitchen_name: "sales",
+        unit: unit,
+        available_qty: avl_qty_sales,
+        min_stock_required: min_stock_required_sales,
+        content_per_single_item: content_per_single_item,
+        price_per_single_item: price_per_single_item,
+        supplier_name: supplier_name,
+        barcode_number: barcode_number,
+        image_url: image_url,
+      });
+      ingredientItem2.save();
+    }
     res.status(201).json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -173,11 +176,13 @@ const updateIngredientItem = async (req, res) => {
 const deleteIngredientItemByName = async (req, res) => {
   try {
     var { name } = req.params;
+    var kitchen_name = req.body.kitchen_name;
     if (name) {
       name = name.toLowerCase();
     }
     const deleted = await IngredientItem.deleteMany({
       name: name,
+      kitchen_name: kitchen_name,
     });
     if (deleted) {
       return res.status(200).send("Ingredient item deleted");
